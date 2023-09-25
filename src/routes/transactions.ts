@@ -5,11 +5,30 @@ import crypto from 'node:crypto'
 
 export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
     app.get('/', async () => {
-        const transactions = await knexConnect('transactions')
-            .where('amount', '>', 1)
-            .select('*')
+        const transactions = await knexConnect('transactions').select('*')
+        return {
+            transactions
+        }
+    })
 
-        return transactions
+    app.get('/:id', async (request, reply) => {
+        const getTransactionParamsSchema = z.object({
+            id: z.string().uuid()
+        })
+
+        const { id } = getTransactionParamsSchema.parse(request.params)
+
+        const transaction = await knexConnect('transactions')
+            .where('id', id)
+            .first()
+
+        if (!transaction) {
+            return await reply.code(404).send()
+        }
+
+        return {
+            transaction
+        }
     })
 
     app.post('/', async (request, reply) => {
