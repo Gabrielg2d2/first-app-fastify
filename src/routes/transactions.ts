@@ -31,6 +31,33 @@ export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
         }
     })
 
+    app.get('/summary', async () => {
+        const transactions = await knexConnect('transactions').select('*')
+
+        const summary = transactions.reduce(
+            (acc, transaction) => {
+                if (transaction.amount >= 0) {
+                    acc.income += transaction.amount
+                } else {
+                    acc.outcome += transaction.amount
+                }
+
+                acc.total += transaction.amount
+
+                return acc
+            },
+            {
+                income: 0,
+                outcome: 0,
+                total: 0
+            }
+        )
+
+        return {
+            summary
+        }
+    })
+
     app.post('/', async (request, reply) => {
         const createdTransactionSchema = z.object({
             title: z.string(),
