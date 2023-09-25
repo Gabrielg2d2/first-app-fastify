@@ -36,7 +36,7 @@ export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
 
         const summary = transactions.reduce(
             (acc, transaction) => {
-                if (transaction.amount >= 0) {
+                if (transaction.amount > 0) {
                     acc.income += transaction.amount
                 } else {
                     acc.outcome += transaction.amount
