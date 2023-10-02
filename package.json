@@ -18,11 +18,13 @@
         "eslint-plugin-promise": "^6.1.1",
         "prettier": "^3.0.3",
         "tsx": "^3.12.10",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "vitest": "^0.34.6"
     },
     "scripts": {
         "dev": "tsx watch src/server.ts",
         "knex": "node --no-warnings --loader tsx ./node_modules/.bin/knex",
-        "lint": "eslint src --ext .ts --fix --max-warnings=0"
+        "lint": "eslint src --ext .ts --fix --max-warnings=0",
+        "test": "vitest"
     }
 }
