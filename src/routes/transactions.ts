@@ -1,5 +1,5 @@
 import { type FastifyInstance } from 'fastify'
-import { knexConnect } from '../database'
+import { knex } from '../database'
 import { z } from 'zod'
 import crypto from 'node:crypto'
 import { checkSessionIdExists } from '../middlewares/check-session-id-exists'
@@ -19,7 +19,7 @@ export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
                 })
             }
 
-            const transactions = await knexConnect('transactions').select('*')
+            const transactions = await knex('transactions').select('*')
             return {
                 transactions
             }
@@ -38,7 +38,7 @@ export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
 
             const { id } = getTransactionParamsSchema.parse(request.params)
 
-            const transaction = await knexConnect('transactions')
+            const transaction = await knex('transactions')
                 .where('id', id)
                 .first()
 
@@ -58,7 +58,7 @@ export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
             preHandler: [checkSessionIdExists]
         },
         async () => {
-            const transactions = await knexConnect('transactions').select('*')
+            const transactions = await knex('transactions').select('*')
 
             const summary = transactions.reduce(
                 (acc, transaction) => {
@@ -107,7 +107,7 @@ export async function transactionsRoutes(app: FastifyInstance): Promise<void> {
             })
         }
 
-        await knexConnect('transactions').insert({
+        await knex('transactions').insert({
             id: crypto.randomUUID(),
             title,
             amount: type === 'credit' ? amount : amount * -1,
